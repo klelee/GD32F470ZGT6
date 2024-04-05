@@ -1,0 +1,19 @@
+# 保存编译过程里输出的文件。
+output/
+project/Objects/
+GD_Library/GD32F4xx_Firmware_Library_V3.2.0/
+
+# 保存编译输出的布局文件map和列表文件。
+listings/
+
+# 记录CMSIS组件输出的事件监控日志。
+EventRecorderStub.scvd
+
+# vscode 配置信息
+.vscode
+
+# User-specific uVision files
+*.opt
+*.uvgui
+*.uvgui.*
+*.uvguix.*
