@@ -25,26 +25,46 @@ void usart0_init(uint32_t baudrate)
     usart_enable(LOG_USART);
 }
 
-void usart_send_data(uint32_t usart_periph, uint8_t ucch)
+#if !defined(__MICROLIB)
+//不使用微库的话就需要添加下面的函数
+#if (__ARMCLIB_VERSION <= 6000000)
+//如果编译器是AC5  就定义下面这个结构体
+struct __FILE
 {
-	usart_data_transmit(usart_periph, (uint8_t)ucch);
-	while(RESET == usart_flag_get(usart_periph, USART_FLAG_TBE));
-}
+	int handle;
+};
+#endif
 
-void usart_send_string(uint32_t usart_periph, uint8_t *ucstr)
+FILE __stdout;
+
+//定义_sys_exit()以避免使用半主机模式
+void _sys_exit(int x)
 {
-	while(ucstr && *ucstr) {
-	  usart_send_data(usart_periph, *ucstr++);
-	}
+	x = x;
 }
+#endif
 
+/* retarget the C library printf function to the USART */
 int fputc(int ch, FILE *f)
 {
-     usart_send_data(LOG_USART, ch);
-     return ch;
+    usart_data_transmit(LOG_USART, (uint8_t)ch);
+    while(RESET == usart_flag_get(LOG_USART, USART_FLAG_TBE));
+    return ch;
 }
 
-void usart_init()
+void usart_send_data(uint32_t usart_periph, uint8_t ucch)
 {
-	usart0_init(115200U);
+    usart_data_transmit(usart_periph, (uint8_t)ucch);  
+    while(RESET == usart_flag_get(usart_periph, USART_FLAG_TBE)); // 等待发送数据缓冲区标志置位
+}
+
+void usart_send_buffer(uint32_t usart_periph, uint8_t *ucstr)
+{   
+    while(ucstr && *ucstr) {     
+        usart_send_data(usart_periph, *ucstr++);    
+    }
+}
+
+void usart_init(void) {
+    usart0_init(115200U);
 }
