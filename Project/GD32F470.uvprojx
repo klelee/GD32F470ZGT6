@@ -412,9 +412,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>App</GroupName>
-        </Group>
-        <Group>
           <GroupName>Hardware</GroupName>
           <Files>
             <File>

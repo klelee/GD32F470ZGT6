@@ -32,7 +32,6 @@
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"
-#include "main.h"
 #include "task.h"
 
 #ifndef __TARGET_FPU_VFP
